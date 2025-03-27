@@ -74,7 +74,8 @@ fun main() {
 
 <details>
 <summary><strong>2.2 행동과 데이터 캡슐화 : 클래스와 프로퍼티</strong></summary>
-  - 객체지향 언어로 클래스라는 추상화를 제공, 더 적은 양의 코드로 대부분의 공통적인 작업을 수행할수 있음
+
+- 객체지향 언어로 클래스라는 추상화를 제공, 더 적은 양의 코드로 대부분의 공통적인 작업을 수행할수 있음
 
 (Java)
 
@@ -134,6 +135,7 @@ class Rectangle(val height: Int, val width: Int) {
 
 <details>
 <summary><strong>2.3 선택 표현과 처리 : enum과 when</strong></summary>
+
 - `when`은 자바의 `switch`를 대신하지만 훨씬 더 강력하며 더 자주 사용 되는 프로그래밍 요소
 - 코틀린에서는 `enum class` 를 사용하지만 자바에서는 `enum` 을 사용
 
@@ -241,8 +243,10 @@ fun main() {
 
 <details>
 <summary><strong>2.4 대상 이터레이션: while과 for 루프 </strong></summary>
-  - 코틀린의 이터레이션은 자바 등 다른 언어에서 사영호난 방법과 아주 비슷
-  - while은 다른 언어와 마찬가지인 전통적인 형식을 따름
+
+
+- 코틀린의 이터레이션은 자바 등 다른 언어에서 사영호난 방법과 아주 비슷
+- `while`은 다른 언어와 마찬가지인 전통적인 형식을 따름
 
 ## 2.4.1 조건이 참인 동안 코드 반복 : while 루프
 
@@ -327,6 +331,9 @@ for ((index, element) in collection.whitIndex()) { // <- 인덱스와 함께 컬
 
 <details>
 <summary><strong>2.5 코틀린에서 예외 던지고 잡아내기</strong></summary>
+
+
+
 - 코틀린에서 예외 처리는 자바나 다른 언어의 예외 처리와 비슷
 - `throw` 키워드를 사용해 예외를 던질 수 있음
     
@@ -388,6 +395,8 @@ fun parseNumber(input: String): Int {
 <details>
 <summary><strong>3.1 코틀린에서 컬렉션 만들기 </strong></summary>
 
+
+
 ``` kotlin
 val set1 = setOf(1,7, 53)
 
@@ -411,6 +420,9 @@ println(map.javaClass) // class java.util.LinkedHashMap
 
 <details>
 <summary><strong>3.2 함수를 호출하기 쉽게 만들기</strong></summary>
+
+
+
 - 컬렉션을 만드는 방법을 살펴봤으므로 뭔가 간단한 일을 하자?
 
 ```kotlin
@@ -469,4 +481,59 @@ fun <T> .joinToString(
     ```kotlin
     val defaultGreeting: String = "Hello, world!"
     ```
+</details>
+
+<details>
+<summary><strong>3.3 메서드를 다른 클래스에 추가: 확장 함수와 확장 프로퍼티 </strong></summary>
+
+
+
+- 확장 함수는 단순
+- 확장 함수는 어떤 클래스의 멤버 메서드인 것처럼 호출할 수있지만, 그 클래스의 밖에 선언된 함수
+
+```kotlin
+fun String.lastChar(): Char = this.get(this.length - 1)
+```
+
+- 함수 이름 앞에 그 함수가 확장할 클래스의 이름을 덧붙이는 것 → 이런 클래스를 수신 객체 타입(receiver type)라 부름
+- 확장 함수 호출 . 시여러분이 호출하는 대상 값(객채)를 수신 객체(receiver object)라고 부름
+
+```kotlin
+println("Kotlin".lastChar()) 
+// n 
+```
+
+- 확장 함수 내부에서는 일반적인 인스턴스 메서드의 내부와 마찬가지로 수신 객체의 메서드나 프로퍼티를 바로 사용할 수 있음
+- 하지만 확장 함수가 캡슐화를 깨지 않는 다는 사실
+- 클래스 안에서 정의한 메서드와 달리 확장 함수안에서는 클래스 내부에서만 사용 할수 있는 `private` , `protected` 를 사용 할 수 없음
+
+## 3.3.1 임포트와 확장 함수
+
+- 확장 함수를 쓰려면 다른 클래스나 함수와 마찬가지로 해당 함수를 임포드를 해야함
+
+## 3.3.2 자바에서 확장 함수 호출
+
+```kotlin
+char c = StringUtilKt.lastChat("Java");
+```
+
+## 3.3.3 확장 함수로 유틸리티 함수 정의 (생략)
+
+## 3.3.4 확장 함수는 오버라이드를 할수 없다
+
+- 확장 함수는 오버라이드를 할 수 없음
+
+## 3.3.5 확장 프로퍼티
+
+- 확장 함수와 마찬가지로 확장 프로퍼티를 사용하면 함수가 아니라 프로퍼티 형식의 구문으로 사용할수 있는 api를 추가할 수 있음
+- 프로퍼티라는 이름으로 불리기는 하지만 상태를 저장할 적절한 방법이 없기때문에 실제로 확장 프로퍼티는 아무 상태도 가질 수 없음
+
+```kotlin
+val String.lastChar: Char
+	get() = get(length - 1)
+```
+
+- 확장 프로퍼티도 단지 프로퍼티에 수신 객체 클래스가 추가됐을 뿐임을 알 수 있음
+- 뒷받침하는 필드가 없어 기본 게터 구현을 제공 할 수 없으므로 최소한 게터는 꼭 정의를 해야함
+- 초기화 코드에서 계산한 값을 담을 장소가 전혀 없으므로 초기화 코드를 쓸 수 없음	
 </details>
