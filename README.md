@@ -252,7 +252,7 @@ fun main() {
 while(조건) {
   if(shouldExit) {
     break
-	}
+  }
 }
 ```
 
@@ -271,13 +271,13 @@ do {
 ```kotlin
 outer@while(outerCondition) {
   while(innerCondition) {
-		//if(shouldExit) break 
-		//if(shouldExit) continue
-		
-		// 레이블을 지정하면 지정한 루프를 빠져나갈수 있음 
-		//if(shouldExit) break@outer 
-		//if(shouldExit) continue@outer	
-	}
+    //if(shouldExit) break 
+    //if(shouldExit) continue
+
+    // 레이블을 지정하면 지정한 루프를 빠져나갈수 있음
+    //if(shouldExit) break@outer
+    //if(shouldExit) continue@outer	
+  }
 }
 ```
 
@@ -299,7 +299,7 @@ val oneToTen = 1..10 // (1부터 10까지)
 ```kotlin
 val collection = listOf("red", "blue", "green")
 for (color in collection) {
-	print("$color")
+  print("$color")
 }
 ```
 
@@ -308,7 +308,7 @@ for (color in collection) {
 ```kotlin
 val collection = listOf("red", "blue", "green")
 for ((index, element) in collection.whitIndex()) { // <- 인덱스와 함께 컬렉션을 이터레이션 함 
-	print("$index, $element")
+   print("$index, $element")
 }
 ```
 
@@ -323,4 +323,64 @@ for ((index, element) in collection.whitIndex()) { // <- 인덱스와 함께 컬
      else -> println("$ch 는 특수문자입니다.")
   }
 ```
+</details>
+
+<details>
+<summary><strong>2.5 코틀린에서 예외 던지고 잡아내기</strong></summary>
+- 코틀린에서 예외 처리는 자바나 다른 언어의 예외 처리와 비슷
+- `throw` 키워드를 사용해 예외를 던질 수 있음
+    
+    ```kotlin
+    if(percentage !in 0..100) {
+	throw IllegalArgumentException("a percentage value nust be between - and 100") 
+    }
+    ```
+    
+
+## 2.5.1 try, catch, finally를 사용한 예외 처리와 오류 복구
+
+```kotlin
+try {
+    // 예외가 발생할 수 있는 코드
+} catch(e: Exception) {
+    // 예외 처리 코드
+} finally {
+    // 항상 실행되는 코드 (예외 여부 상관없음)
+}
+```
+
+```kotlin
+fun parseNumber(input: String): Int {
+    return try {
+        input.toInt()
+    } catch (e: NumberFormatException) {
+        println("오류 발생: 숫자가 아닌 입력값 [$input]")
+        -1 // 예외 발생 시 기본값으로 -1 반환하여 복구
+    } finally {
+        println("입력값 처리 완료: $input")
+    }
+}
+```
+
+- 자바에서는 체크 예외가 메서드 시그니처의 일부
+
+| **예외 종류**	 | 	**메서드 시그니처에 명시 필요 여부** |
+| --- | --- |
+| Checked Exception (IOException, SQLException)	 | 필수 (꼭 명시해야 함) |
+| Unchecked Exception (NullPointerException, ArithmeticException) |  불필요 (명시하지 않아도 됨 |
+
+## 2.5.2 try를 식으로 사용
+
+- 지금까지는 try를 문으로만 사용했지만, try의 결과를 변수에 대입 할 수 있음
+- 아래 코드처럼 catch에서 반환할 수 도 있음
+    
+    ```kotlin
+    fun parseInt(input: String): Int {
+        return try {
+            input.toInt()
+        } catch (e: NumberFormatException) {
+            -1  
+        }
+    }
+    ```
 </details>
