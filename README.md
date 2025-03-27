@@ -408,3 +408,65 @@ println(map.javaClass) // class java.util.LinkedHashMap
 - 결과에서 알 수 있는 것처럼 코틀린은 표준 자바 컬렉션 클래스를 사용
 - 자바와 달리 코틀린 컬렉션 인터페이스가 디폴트로 읽기 전용이라는 사실을 알고있자	
 </details>
+
+<details>
+<summary><strong>3.2 함수를 호출하기 쉽게 만들기</strong></summary>
+- 컬렉션을 만드는 방법을 살펴봤으므로 뭔가 간단한 일을 하자?
+
+```kotlin
+val list = listOf(1, 2, 3)
+println(list) 
+// [1, ,2, 3]
+```
+
+## 3.2.1 이름 붙인 인자
+
+- 첫 번째 문제는 함수 호출 부분의 가독성
+
+```kotlin
+val items = listOf("apple", "banana", "cherry")
+val result = items.joinToString(separator = ", ", prefix = "[", postfix = "]")
+println(result) 
+```
+
+- 코틀린으로 작성한 함수를 호출할 때는 함수에 전달하는 인자 중 일부의 이름을 명시 할 수 있음
+- 전달하는 모든 인자의 이름을 지정하는 경우 심지어 인자의 수선를 변경할 수 있음
+
+## 3.2.2 디폴트 파라미터 값
+
+```kotlin
+fun <T> .joinToString(
+    collection: Collection<T>,
+    separator: String = ", ",
+    prefix: String = "",
+    postfix: String = "".
+): String 
+```
+
+- collection을 제외하고 기본값이 지정된 파라미터 값임
+- 함수를 호출할때 모든 인자를 쓸 수도 있고, 일부를 생략할 수도 있음
+- 함수의 디폴트 파라미터 값은 함수를 호출하는 쪽이 아니라 함수 선언 쪽에 인코딩 된다는 사실!, 어떤 클래스 안에 정의된 함수의 기본값을 바꾸고 그 클래스가 포함된 파일을 재컴파일하면 그 함수를 호출하는 코드 중 값을 지정하지 않은 모든 이자는 자동으로 바뀐
+
+기본값을 적용받음
+
+## 3.2.3 정적인 유틸리티 클래스 없애기: 최상위 함수와 프로퍼티
+
+- 자바에서는 모든 코드를 클래스의 메서드로 작성해야만 한다는 사실을 알고 있음
+- **최상위 함수와 프로퍼티**
+    - Kotlin에서는 클래스 내부가 아닌 파일의 최상위에 직접 함수를 선언할 수 있음. 이렇게 선언된 함수는 해당 패키지 내에서 자유롭게 사용할 수 있음
+- **적 메서드 불필요**
+    - Java에서는 정적 메서드를 담기 위해 유틸리티 클래스를 만들어야 하지만, Kotlin에서는 이런 패턴이 필요 없음
+- **JVM 상호 운용성**
+    - 최상위 함수와 프로퍼티는 컴파일 시 파일 이름에 따른 클래스로 변환됨. 필요하다면 @file:JvmName("CustomName") 어노테이션을 사용해 클래스 이름을 변경할 수 있음
+- 최상위 함수 예시
+    
+    ```kotlin
+    fun isNullOrEmpty(s: String?): Boolean = s == null || s.isEmpty()
+    ```
+    
+- 최상위 프로퍼티 예시
+    
+    ```kotlin
+    val defaultGreeting: String = "Hello, world!"
+    ```
+</details>
