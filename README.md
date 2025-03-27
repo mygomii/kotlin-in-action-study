@@ -384,3 +384,27 @@ fun parseNumber(input: String): Int {
     }
     ```
 </details>
+<hr>
+<details>
+<summary><strong>3.1 코틀린에서 컬렉션 만들기 </strong></summary>
+
+``` kotlin
+val set1 = setOf(1,7, 53)
+
+val list = listOf(1, 7, 53)
+val map = listOf(1 to "one", 7 to "seven", 53 to "fifity-three")
+```
+
+- 여기서 `to` 는 언어가 제공하는 특별한 키워드가 아니라 일반 함수라는 점에 유의
+
+```kotlin
+println(set.javaClass) // class java.util.LinkedHasSet
+
+println(list.javaClass) // class java.util.Arrays$ArrayList
+
+println(map.javaClass) // class java.util.LinkedHashMap
+```
+
+- 결과에서 알 수 있는 것처럼 코틀린은 표준 자바 컬렉션 클래스를 사용
+- 자바와 달리 코틀린 컬렉션 인터페이스가 디폴트로 읽기 전용이라는 사실을 알고있자	
+</details>
