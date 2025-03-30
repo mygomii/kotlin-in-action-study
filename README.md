@@ -657,3 +657,80 @@ fun main() {
 
 - 3중 따옴표 문자열 안에 문자열 템플릿을 사용할 수 있음 그러나 3중 따옴표 문자열 안에서는 이스케이프를 할 수 없기 때문에 문자열 내용에서 $나 유니코드 이스케이프를 사용하고 싶을 때는 내포 식을 사용해야함
 </details>
+
+<details>
+<summary><strong>3.6 코드 깔끔하게 다듬기: 로컬 함수와 확장</strong></summary>
+
+ - 많은 개발자가 좋은 코드의 중요한 특징 중 하나가 중복이 없는 것이라 믿음 →ㅇㅈㅇㅈ
+    
+    → 이런 원칙에 대해 **반복하지 말라(DRY: Don’t Repeat Yourself)** 라는 이름도 있음 
+    
+- 자바에서는 쉽지않지만 코틀린에는 더 깔끔한 해법이 있음
+- 코틀린에서는 함수에서 추출한 함수를 원래의 함수 내부에 내포 시킬 수 있음
+
+- 코드 중복을 보여주는 예제
+
+```kotlin
+class Student(val name: String, val korean: Int, val english: Int, val math: Int) {
+    fun koreanAverage(): Double {
+        return korean / 100.0 * 100
+    }
+
+    fun englishAverage(): Double {
+        return english / 100.0 * 100
+    }
+
+    fun mathAverage(): Double {
+        return math / 100.0 * 100
+    }
+}
+```
+
+- 로컬 함수를 사용해 코드 중복 줄이기
+
+```kotlin
+class Student(val name: String, val korean: Int, val english: Int, val math: Int) {
+    
+    // 공통 로직을 메서드로 추출
+    private fun calculateAverage(score: Int): Double {
+        return score / 100.0 * 100
+    }
+
+    fun koreanAverage(): Double {
+        return calculateAverage(korean)
+    }
+
+    fun englishAverage(): Double {
+        return calculateAverage(english)
+    }
+
+    fun mathAverage(): Double {
+        return calculateAverage(math)
+    }
+}
+```
+
+- 로컬 함수를 확장하기
+
+```kotlin
+class Calculator {
+    fun calculateArea(width: Int, height: Int, isRectangle: Boolean): Int {
+
+        fun rectangleArea() = width * height
+        fun triangleArea() = width * height / 2
+
+        return if (isRectangle) rectangleArea() else triangleArea()
+    }
+}
+
+fun main() {
+    val calculator = Calculator()
+
+    println("직사각형 면적: ${calculator.calculateArea(10, 5, true)}")
+    println("삼각형 면적: ${calculator.calculateArea(10, 5, false)}")
+}
+```
+
+- `rectangleArea` , `triangleArea` 처럼 내부에 로컬 함수로 넣을 수 있음
+- 하지만 내포된 함수의 깊이가 깊어지면 코드를 읽기가 상당히 어려워질 수 있으므로 일반적으로 한 단계만 함수를 내포시키라고 권장함
+</details>
