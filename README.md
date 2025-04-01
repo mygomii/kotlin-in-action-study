@@ -827,3 +827,132 @@ fun handleResult(result: Result) {
 }
 ```
 </details>
+
+
+<details>
+<summary><strong>4.2 뻔하지 않은 생성자나 프로퍼티를 갖는 클래스 선언 </strong></summary>
+
+ - 객체지향 언어에서 클래스는 보통 생성자를 하나 이상 선언할 수 있음
+- 코틀린도 마찬가지지만 한가지 중요하고 특이한 차이가 있음
+- 코틀린은 주 생성사와 부 생성자를 구분함
+- 또한, 코틀린에서는 초기화 블록을 통해 초기화 로직을 추가할 수 있음
+
+## 4.2.1 클래스 초기화: 주 생성자와 초기화 블록
+
+```kotlin
+class User(val nickname: String)
+```
+
+- 보통 클래스의 모든 선언은 중괄호({}) 사이에 들어감, 하지만 이 클래스 선언에는 중괄호가 없고 괄호 사이에 `val` 선언만 존재함
+- 이렇게 클래스 이름 뒤에 오는 괄호로 둘러싸인 코드를 `주 생성자` 라고 부름
+- `주 생성자` 는 생성자 파라미터를 지정하고 그 생성자 파라미터에 의해 초기화되는 프로퍼티를 정의하는 2가지 목적에 쓰임
+
+```kotlin
+class User constructor(_nickname: String) {
+  val nickname: String
+	
+  init { // 초기화 블록 
+     nickname = _nickname
+  }
+}
+```
+
+- `constructor` 키워드는 주 생성자나 부 생성자 정의를 시작할때 사용
+- `init` 키워드는 초기화 블록을 시작함
+    - 초기화 블록에는 클래스의 객체가 만들어질 때 실행될 초기화 코드가 들어감
+    - 초기화 블록은 주 생성자와 함께 사용
+- 생성자 파라미터 `_nickname` 에서 맨 앞의 밑줄(_)은 프로퍼티와 생성자 파라미터를 구분해줌 → 자바에서는 `this.nickname = nickname` 같은 식으로 사용
+
+## 4.2.2 부 생성자: 상위 클래스를 다른 방식으로 초기화
+
+- 일반적으로 코틀린에서는 생성자가 여럿 있는 경우가 자바보다 훨씬 적음
+- 코틀린의 디폴트 파라미터 값과 이름 붙은 인자 문법을 사용해 해결할 수 있음
+- JAVA
+    
+    ```kotlin
+    public class Downloader {
+       public Downloader(String url) {
+       // 어떤 코드
+       }
+       public Downloader(URI uri) {
+       // 어떤 코드
+       }
+    }
+    ```
+    
+- Kotlin
+    
+    ```kotlin
+    open class Downloader {
+      constructor(url: String) {
+      // 어떤 코드
+      }
+      constructor(uri: URI) {
+      // 어떤 코드
+      }
+    }
+    ```
+    
+- 이 클래스는 주 생성자를 선언하지 않고 부 생성자만 2가지 선언
+- 부 생성자는 `constructor` 키워드로 시작하고, 필요에 따라 얼마든지 많은 부 생성자를 선언해도 됨
+
+## 4.2.3 인터페이스에 선언된 프로퍼티 구현
+
+- 코틀린에서는 인터페이스에 추상 프로퍼치 선언을 넣을 수 있음
+
+```kotlin
+interface User {
+  val nickname: String 
+}
+```
+
+- `User` 인터페이스를 구현하는 클래스가 `nickname` 의 값을 얻을 수 있는 방법을 제공해야 한다는 뜻
+- 인터페이스는 아무 상태도 포함할 수 없으므로 상태를 저장할 필요가 있다면 인터페이스를 구현한 하위 클래스에서 상태 저장을 위한 프로퍼티 등을 만들어야함
+
+## 4.2.4 게터와 세터에서 뒷받침하는 필드에 접근
+
+- 이제는 이 두 유형을 조합해서 어떤 값을 저장하되 그값을 변경하거나 읽을 때마다 정해진 로직을 실행하는 유형의 프로퍼티를 만드는 방법을 아아보자
+
+```kotlin
+class User(val name: String) {
+   var address: String = "unspecfied"
+      set(value: String) {
+          println(
+             """
+		Address was changed for $name:
+		"$field" -> "$value". // <- 뒷받침하는 필드 값 읽기
+             """.trimIndent()
+          )
+          field = value  // <- 뒷받침하는 필드 값 변경하기 
+      }
+}
+```
+
+```kotlin
+fun main() {
+  val user = User("Alice")
+  user.address = "충정로"
+  //  Address was changed for Alice : 
+  //  "unspecfied" -> "충정로".
+}
+```
+
+- 코틀린에서 프로퍼티의 값을 바꿀 때는 `user.address = "new value"` 처럼 필드 설정 구문을 사용
+- 이 구문은 내부적으로는 `address` 의 `setter` 를 호출
+
+## 4.2.5 접근자의 가시성 변경
+
+- 접근자의 가시성은 기본적으로는 프로퍼티의 가시성과 같음
+- 하지만 원한다면 `get` 이나 `set` 앞에 가시성 변경자를 추가해서 접근자의 가시성을 변경할 수 있음
+
+```kotlin
+class LengthCounter {
+   val counter: Int = 0  // 이 클래스 밖에서 이 프로퍼티의 값을 바꿀 수 없음  
+      private set   
+	
+   fun addWord(word: String) {
+      counter += word.length
+   }
+}
+```
+</details>
