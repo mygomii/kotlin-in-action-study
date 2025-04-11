@@ -1139,3 +1139,40 @@ println(isEqualTo42(42))  // true
 println(isEqualTo42(100)) // false
 ```
 </details>
+
+<details>
+<summary><strong>5.2 자바의 함수형 인터페이스 사용: 단일 추상 메서드 </strong></summary>
+	- JVM 생태계에는 이미 코틀린으로 작성된 수많은 라이브러리가 있고, 이런 라이브러리는 코틀린 람다를 직접 사용할 수 있음
+- 하지만 코틀린 프로젝트에 자바로 작성한 라이브러리를 사용하게 될 가능성이 큼, 다행인 점은 코틀린 람다가 자바 API와 완전히 호환된다는 점
+
+## 5.2.1 람다를 자바 메서드의 파라미터로 전달
+
+- 자바 메서드가 **함수형 인터페이스**를 받으면, 코틀린에서는 **람다식**을 그냥 넘기면 됨
+
+```java
+public interface Comparator<T> {
+    int compare(T o1, T o2);
+}
+```
+
+```java
+val list = listOf(3, 5, 1, 2)
+val sortedList = list.sortedWith { a, b -> a - b }
+
+println(sortedList) // [1, 2, 3, 5]
+```
+
+- sortedWith 안에 **람다**를 넣었지만, 사실 이건 **Comparator**를 자동으로 만들어서 넘긴 거임
+
+## 5.2.2 SAM 변환: 람다를 함수형 인터페이스로 명시적 변환
+
+- SAM(Single Abstract Method) 변환이란?
+    - **추상 메서드가 딱 하나만 있는 인터페이스**를 코틀린 람다로 자동 변환하는 것.
+- 대표적인 예 : `Runnable`, `Callable`, `Comparator`, `ActionListener`, `Predicate` 등
+
+- **SAM 변환이 가능한 경우**
+    - **인터페이스**여야 함. (클래스 아님)
+    - **추상 메서드가 딱 하나**여야 함.
+- **SAM 변환이 안 되는 경우**
+    - 메서드가 2개 이상이면 **람다로 변환할 수 없음**.
+</details>
