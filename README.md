@@ -1176,3 +1176,22 @@ println(sortedList) // [1, 2, 3, 5]
 - **SAM 변환이 안 되는 경우**
     - 메서드가 2개 이상이면 **람다로 변환할 수 없음**.
 </details>
+
+<details>
+<summary><strong>5.3 코틀린에서 SAM 인터페이스 정의: fun interface</strong></summary>
+
+- 코틀린에서도 자바처럼 “추상 메서드 하나만 있는 인터페이스(SAM 인터페이스)“를 만들 수 있음
+- 이때 사용하는 키워드는 바로 `fun interface`
+- `fun interface`로 선언하면, 람다식으로 인스턴스를 정의 할 수 있음
+
+```kotlin
+fun interface MyFunction {
+    fun invoke(x: Int): Int
+}
+```
+
+```kotlin
+val double = MyFunction { it * 2 }
+println(double.invoke(3)) // 6 <= 이렇게 호출 
+```
+</details
