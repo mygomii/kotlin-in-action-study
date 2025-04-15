@@ -1194,4 +1194,67 @@ fun interface MyFunction {
 val double = MyFunction { it * 2 }
 println(double.invoke(3)) // 6 <= 이렇게 호출 
 ```
-</details
+</details>
+
+<details>
+<summary><strong>5.4 수신 객체 지정 람다 : with, apply, also </strong></summary>
+	
+## 5.4.1 with 함수
+
+- 많은 언어가 어떤 객체의 이름을 반복하지 않고도 그 객체에 대해 다양한 연산을 수행하는 기능을 제공
+- 블록 내에서는 객체의 프로퍼티나 메서드를 직접 호출할 수 있어 코드가 간결해짐
+- 블록의 마지막 표현식 결과를 반환하므로, 특정 작업의 결과값을 얻을 때 유용함
+
+```kotlin
+data class Person(var name: String, var age: Int)
+
+fun main() {
+    val person = Person("Alice", 25)
+    // with 함수를 사용하여 여러 작업을 수행하고 결과값을 반환
+    val description = with(person) {
+        // 블록 내에서는 person 객체의 속성을 직접 참조할 수 있음
+        "Name: $name, Age: $age"
+    }
+    println(description) // Name: Alice, Age: 25
+}
+```
+
+## 5.4.2 apply 함수
+
+- `apply` 함수느 거의 `with` 와 동일하게 작동
+- 람다 블록 내부에서 객체의 프로퍼티나 메서드에 직접 접근할 수 있음(즉, 수신 객체로 처리됨).
+- 블록의 결과와 상관없이 항상 원래의 객체 자신을 반환함
+- 객체의 초기화나 설정 시에 매우 유용함
+
+```kotlin
+data class Person(var name: String = "", var age: Int = 0)
+
+fun main() {
+    // apply를 사용하여 객체를 초기화
+    val person = Person().apply {
+        name = "Bob"
+        age = 30
+    }
+    // apply는 항상 원래 객체를 반환하므로 person은 변경된 객체
+    println(person) // Person(name=Bob, age=30)
+}
+```
+
+## 5.4.3 객체에 추가 작업 수행: also
+
+- 전달된 객체가 블록 내에서 it로 전달됨
+- 주로 사이드 이펙트 작업(예: 디버깅, 로깅 등)을 수행할 때 사용되며, 최종적으로 원본 객체를 그대로 반환함
+- 객체의 값이나 상태를 변경하지 않고 부가적인 작업을 수행할 때 유용함
+
+```kotlin
+fun main() {
+    // also를 사용하여 부가 작업을 수행
+    val numbers = mutableListOf("One", "Two", "Three").also {
+        println("초기 리스트: $it")
+        //  로깅이나 디버그 용도로 활용 가능
+    }
+    // numbers는 리스트 그 자체로 반환됨
+    println("최종 리스트: $numbers")
+}
+```
+</details>
