@@ -1258,3 +1258,259 @@ fun main() {
 }
 ```
 </details>
+<hr>
+<details>
+<summary><strong>6.1 컬렉션에 대한 함수형 API</strong></summary>
+- 함수형 프로그래밍 스타일은 컬렉션을 다룰 때 여러 가지 장점을 제공
+
+## 6.1.1 원소 제거와 변환: filter 와 map
+
+- `filter` 함수는 컬렉션을 순회하면서 주어진 람다가 `true` 를 반환하는 원소들만 모음
+- 예를 들어 리스트가 있다면 `filter` 를 통해 그중에서 짝수만 골라 낼 수 있음
+
+```kotlin
+fun main() {
+	val list = listOf(1,2,3,4)
+	println(list.filter{ it % 2 == 0})
+	// [2, 4]
+}
+```
+
+- `filter` 함수는 주어진 술어와 일치하는 원소들로 이뤄진 새 컬렉션을 만들 . 수있지만 그 과정에서 원소를 변환하지 않음
+
+- `map` 함수는 입력 컬렉션의 우너소를 변활 할 수 있게 해줌
+- `map` 은 주어진 함수를 컬렉션의 각 원소에 적용하고 그 결과값들을 새 컬렉션에 모아줌
+
+```kotlin
+fun main() {
+	val list = listOf(1,2,3,4)
+	println(list.map{ it * it})
+	// [1, 4, 9, 16]
+}
+```
+
+## 6.1.2 컬렉션 값 누적: reduce와 fold
+
+- `reduce` 를 사용하면 컬렉션의 첫 번째 값을 누적기에 넣음
+
+```kotlin
+val numbers = listOf(1, 2, 3, 4)
+val sum = numbers.reduce { acc, i -> acc + i } //  10
+```
+
+- `fold` 함수는 개념적으로 `reduce` 와 비슷하지만 컬렉션 첫 번째 원소를 누적 값으로 시작하는 대신, 임의의 시작 값을 선택할 수 있음
+
+```kotlin
+val numbers = listOf(1, 2, 3, 4)
+val sum = numbers.fold(0) { acc, i -> acc + i } //  10
+```
+
+- **컬렉션이 비어있는 경우**: `reduce`는 비어있는 경우 예외를 던지므로, 비어있을 가능성이 있다면 fold를 사용하거나 미리 검사를 해야 함
+- **누적 로직의 복잡성**: 누적 연산의 결과 타입이 요소 타입과 다를 때는 `fold`가 더 유연하게 사용할 수 있음
+- **함수형 프로그래밍 스타일**: 이들 함수는 코드의 간결성과 가독성을 높이며, 명령형 반복문보다 함수형 스타일을 선호하는 경우 유용함
+
+## 6.1.3 컬렉션에 술어 적용: all, any, none, count, find
+
+- `all`
+    - 모든 요소가 주어진 조건을 만족하는지 확인함
+    
+    ```kotlin
+    val numbers = listOf(2, 4, 6)
+    val areAllEven = numbers.all { it % 2 == 0 }  // true
+    ```
+    
+
+- **`any`**
+    - **컬렉션 내에서 하나 이상의 요소가 조건을 만족하는지 검사함**
+    
+    ```kotlin
+    val numbers = listOf(1, 3, 5, 6)
+    val hasEvenNumber = numbers.any { it % 2 == 0 }  //true
+    ```
+    
+
+- **`none`**
+    - 컬렉션 내의 어떤 요소도 주어진 조건을 만족하지 않는지 확인함
+        
+        ```kotlin
+        val numbers = listOf(1, 3, 5)
+        val hasNoEvenNumber = numbers.none { it % 2 == 0 }  // true
+        ```
+        
+
+- **`count`**
+    - ****조건을 만족하는 요소의 개수를 계산함
+    
+    ```kotlin
+    val numbers = listOf(1, 2, 3, 4, 5)
+    val evenCount = numbers.count { it % 2 == 0 }  //  2
+    ```
+    
+
+- **`find`**
+    - 주어진 조건에 처음으로 부합하는 요소를 검색하여 반환함
+    - 조건을 만족하는 첫 번째 요소를 찾으며, 만족하는 요소가 없으면 `null`을 반환함
+    
+    ```kotlin
+    val numbers = listOf(1, 3, 5, 7)
+    val found = numbers.find { it > 4 }  //  5/
+    ```
+    
+
+## 6.1.4 리스트를 분할해 리스트의 쌍으로 만들기: partition
+
+- 반환 타입은 `Pair<List<T>`, `List<T>>`
+- 리스트를 **둘로 나눠야 할 때 간결하고 가독성이 좋은 방법**
+- `filter` 두 번 쓰는 것보다 효율적임
+
+```kotlin
+val numbers = listOf(1, 2, 3, 4, 5, 6)
+val (even, odd) = numbers.partition { it % 2 == 0 }
+
+println(even) // [2, 4, 6]
+println(odd)  // [1, 3, 5]
+```
+
+## 6.1.5 리스트를 여러 그룹으로 이뤄진 맵으로 바꾸기: groupBy
+
+- `groupBy`는 리스트를 **조건 기반으로 맵으로 변환**할 때 사용
+- 반환값은 `Map<K, List<V>>`
+- 조건 함수의 결과가 **키**가 되며, 키에 해당하는 요소들이 리스트로 묶임
+- 복잡한 필터/분류 작업을 깔끔하게 처리 가능
+
+```kotlin
+val words = listOf("a", "ab", "abc", "de", "def")
+val grouped = words.groupBy { it.length }
+
+println(grouped)
+// {1=[a], 2=[ab, de], 3=[abc, def]}
+```
+
+## 6.1.6 컬렉션을 맵으로 변환: associate, associateWith, associateBy
+
+- `associate`, `associateWith`, `associateBy`는 컬렉션을 **`Map`으로 변환**할 때 사용함
+- 각 함수는 어떤 값을 **`Map`의 키, 값으로 삼을지**에 따라 역할이 다름
+- `associate`
+    - **각 원소를 (key to value) 쌍으로 바꿔서 Map 생성**
+    - `associate { element -> key to value }`
+        
+        ```kotlin
+        val words = listOf("a", "ab", "abc")
+        val result = words.associate { it to it.length }
+        // {a=1, ab=2, abc=3}
+        ```
+        
+- `associateWith`
+    - **리스트의 원소를 `Map`의 키로 사용하고**, 주어진 식의 결과를 값으로 사용
+    - `associateWith { value }`
+    
+    ```kotlin
+    val words = listOf("a", "ab", "abc")
+    val result = words.associateWith { it.length }
+    // {a=1, ab=2, abc=3}
+    ```
+    
+- `associateBy`
+    - **리스트의 원소를 `Map`의 값으로 사용하고**, 주어진 식의 결과를 키로 사용
+    - `associateBy { key }` 또는 `associateBy({ key }) { value }`
+    
+    ```kotlin
+    val words = listOf("a", "ab", "abc")
+    val result = words.associateBy { it.length }
+    // {1=a, 2=ab, 3=abc}
+    
+    val result2 = words.associateBy({ it.length }) { it.uppercase() }
+    // {1=A, 2=AB, 3=ABC}
+    ```
+    
+
+## 6.1.7 가변 컬렉션의 원소 변경: replaceAll, fill
+
+- `replaceAll`
+    - 리스트의 **각 원소에 대해 변환 함수를 적용**해서, 그 결과로 **원소를 교체**
+    - Java의 `List.replaceAll`과 유사
+    
+    ```kotlin
+    val list = mutableListOf("a", "b", "c")
+    list.replaceAll { it.uppercase() }
+    
+    println(list) // [A, B, C]
+    ```
+    
+- `fill`
+    - 리스트의 **모든 원소를 동일한 값으로 설정**
+    
+    ```kotlin
+    val list = MutableList(5) { 0 }
+    list.fill(42)
+    
+    println(list) // [42, 42, 42, 42, 42]
+    ```
+    
+
+## 6.1.8 컬렉션의 특별한 경우 처리: ifEmpty
+
+- `ifEmpty` 함수는 컬렉션이 비어 있을 때 대체 동작을 지정할 수 있는 함수
+- 주로 비어 있을 경우 기본값을 제공하거나, 다른 로직으로 전환할 때 유용하게 사용
+
+```kotlin
+val names = listOf<String>()
+val defaultNames = names.ifEmpty { listOf("Default") }
+
+println(defaultNames) // [Default]
+```
+
+## 6.1.9 컬렉션 나누기: chunked와 windowed
+
+- `chunked(n)`
+    - 컬렉션을 고정 크기의 청크(조각)로 나눔
+    - 마지막 조각은 부족한 크기일 수 있음
+        
+        ```kotlin
+        val result = (1..10).toList().chunked(3)
+        println(result) // [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
+        ```
+        
+- `windowed(n, step, partialWindows = true)`
+    - 지정한 크기와 간격으로 **슬라이딩 윈도우** 형태로 분할
+    - `partialWindows = false` 면 마지막 불완전 윈도우는 제거됨
+    
+    ```kotlin
+    val result = (1..5).toList().windowed(3)
+    println(result) // [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
+    ```
+    
+
+## 6.1.10 컬렉션 합치기: zip
+
+- 두 컬렉션을 쌍(pair)으로 묶어줌 (`Pair<A, B>`)
+- 길이가 다르면 짧은 쪽에 맞춰서 잘림
+
+```kotlin
+val letters = listOf("a", "b", "c")
+val numbers = listOf(1, 2, 3)
+
+val result = letters.zip(numbers)
+println(result) // [(a, 1), (b, 2), (c, 3)]
+```
+
+## 6.1.11 내포된 컬렉션의 원소 처리: flatMap과 faltten
+
+- `flatten()`
+    - 중첩된 컬렉션을 한 단계 평탄화(flatten) 함
+    
+    ```kotlin
+    val list = listOf(listOf(1, 2), listOf(3, 4))
+    val result = list.flatten()
+    // [1, 2, 3, 4]
+    ```
+    
+- `flatMap()`
+    - 각 원소에 대해 리스트를 반환하고, 결과를 한 리스트로 합침
+    
+    ```kotlin
+    val list = listOf("abc", "def")
+    val result = list.flatMap { it.toList() }
+    // ['a', 'b', 'c', 'd', 'e', 'f']
+    ```
+</details>
