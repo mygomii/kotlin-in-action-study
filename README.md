@@ -1514,3 +1514,28 @@ println(result) // [(a, 1), (b, 2), (c, 3)]
     // ['a', 'b', 'c', 'd', 'e', 'f']
     ```
 </details>
+
+<details>
+<summary><strong>6.2 지연 계산 컬렉션 연산: 시퀀스 </strong></summary>
+	
+- Sequence는 **지연(lazy) 계산 방식**으로 작동하는 컬렉션 처리 방식
+- 일반 컬렉션은 각 연산마다 **중간 결과를 새 컬렉션에 저장**하지만
+- Sequence는 **필요할 때마다 원소를 계산**함 → **메모리 낭비 줄고 속도 개선 가능**
+    
+
+```kotlin
+val list = listOf(1, 2, 3, 4, 5)
+val seq = list.asSequence()
+     .filter { 
+	println("filter $it"); 
+	it % 2 == 0 
+     }
+     .map {
+	println("map $it"); 
+	it * 2 
+     }
+
+println(seq.toList())
+// filter 1, filter 2, map 2, filter 3, filter 4, map 4, filter 5
+```
+</details>
