@@ -1539,3 +1539,10 @@ println(seq.toList())
 // filter 1, filter 2, map 2, filter 3, filter 4, map 4, filter 5
 ```
 </details>
+<hr>
+<details>
+<summary><strong>7.1 NullPointerException을 피하고 값이 없는 경우 처리: 널 가능성</strong></summary>
+	
+- 널 가능성은 `NullPointerException` 오류를 피할 수 있게 돕는 코틀린 타입 시스템의 특성임
+- 코틀린을 포함한 최신 언어에서 null에 대한 접근 방법은 가능한 이 문제를 실행 시점에서 컴파일 시점으로 옮기는 것
+</details>
