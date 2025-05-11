@@ -1546,3 +1546,24 @@ println(seq.toList())
 - 널 가능성은 `NullPointerException` 오류를 피할 수 있게 돕는 코틀린 타입 시스템의 특성임
 - 코틀린을 포함한 최신 언어에서 null에 대한 접근 방법은 가능한 이 문제를 실행 시점에서 컴파일 시점으로 옮기는 것
 </details>
+<details>
+<summary><strong>7.2 널이 될 수 있는 타입으로 널이 될 수 있는 변수 명시</strong></summary>
+- Nullable 타입 선언
+    - 기본적으로 코틀린의 모든 참조 타입은 non‑null.
+    - `null` 값을 들고 싶다면 타입 이름 뒤에 ?를 붙여야 함
+    
+```kotlin
+var nonNull: String = "Hello"
+var nullable: String? = "안녕"  // nullable 변수
+nullable = null                // OK
+nonNull = null      
+```
+    
+- 타입 추론 시 주의점
+    - 초기값이 `null` 하나뿐인 경우, 컴파일러가 타입을 추론할 수 없어 오류 발생
+    
+```kotlin
+var inferred = null   // 오류: 타입 추론 불가
+var inferred: String? = null  // OK 
+```
+</details>
